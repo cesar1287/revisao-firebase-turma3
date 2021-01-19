@@ -7,6 +7,7 @@ import android.util.Log
 import android.widget.Toast
 import com.github.cesar1287.revisaofirebase.databinding.ActivityMainBinding
 import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -28,10 +29,15 @@ class MainActivity : AppCompatActivity() {
         Firebase.messaging
     }
 
+    private val analytics by lazy {
+        Firebase.analytics
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        analytics.logEvent("main_screen", null)
 
         setupObservables()
 
@@ -52,11 +58,13 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupObservables() {
         binding.btLoginLogout.setOnClickListener {
+            analytics.logEvent("logout_btn", null)
             Firebase.auth.signOut()
             signIn()
         }
 
         binding.btLoginSave.setOnClickListener {
+            analytics.logEvent("save_btn", null)
             val userData = hashMapOf(
                 "name" to binding.tieLoginName.text.toString(),
                 "email" to binding.tieLoginEmail.text.toString(),
